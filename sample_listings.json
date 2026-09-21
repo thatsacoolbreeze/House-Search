@@ -1,0 +1,38 @@
+[
+  {
+    "id": "ott-001",
+    "address": "124 Maple Grove Crescent",
+    "city": "Ottawa",
+    "province": "ON",
+    "price": 529900,
+    "bedrooms": 3,
+    "bathrooms": 2,
+    "property_type": "Detached",
+    "leased_land": false,
+    "url": "https://example.com/listing/ott-001"
+  },
+  {
+    "id": "ott-002",
+    "address": "48 Riverside Avenue",
+    "city": "Ottawa",
+    "province": "ON",
+    "price": 549000,
+    "bedrooms": 4,
+    "bathrooms": 2.5,
+    "property_type": "Detached",
+    "leased_land": false,
+    "url": "https://example.com/listing/ott-002"
+  },
+  {
+    "id": "ott-003",
+    "address": "9 Cedar Park Road",
+    "city": "Ottawa",
+    "province": "ON",
+    "price": 515000,
+    "bedrooms": 3,
+    "bathrooms": 1.5,
+    "property_type": "Detached",
+    "leased_land": true,
+    "url": "https://example.com/listing/ott-003"
+  }
+]

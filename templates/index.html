@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- The head contains page settings and links to the stylesheet. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>House Watch / Ottawa</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <!-- Everything inside this main element is the visible House Watch dashboard. -->
+  <main class="shell">
+    <!-- The header identifies the app and contains the manual import control. -->
+    <header class="topbar">
+      <div>
+        <p class="kicker">LOCAL PROPERTY MONITOR</p>
+        <h1>House Watch <span>/ Ottawa</span></h1>
+      </div>
+      <!-- JavaScript connects this button to the hidden file input below. -->
+      <button id="import-button" class="action">Import snapshot</button>
+      <input id="file-input" type="file" accept=".json" hidden>
+    </header>
+
+    <!-- This section summarizes the search rules currently hard-coded in app.py. -->
+    <section class="hero">
+      <div>
+        <p class="eyebrow">ACTIVE SEARCH</p>
+        <h2>Detached homes under <strong>$550K</strong></h2>
+        <p class="muted">Ottawa, ON · Excludes leased land · Tracking changes from each imported snapshot</p>
+      </div>
+      <div class="pulse"><span></span> Local database ready</div>
+    </section>
+
+    <!-- JavaScript fills these four values after calling the Python API. -->
+    <section class="stats" aria-label="Search summary">
+      <div><span>Matching homes</span><strong id="listing-count">—</strong></div>
+      <div><span>New this snapshot</span><strong id="new-count">—</strong></div>
+      <div><span>Price changes</span><strong id="change-count">—</strong></div>
+      <div><span>Last checked</span><strong id="checked-at">—</strong></div>
+    </section>
+
+    <!-- The left panel lists matching homes; the right panel lists recorded changes. -->
+    <section class="content-grid">
+      <div class="panel listings-panel">
+        <div class="panel-heading"><div><p class="eyebrow">MATCHES</p><h3>Homes to watch</h3></div><span class="filter-chip">DETACHED · ≤ $550K</span></div>
+        <div id="listings" class="listing-list"><p class="empty">Import a snapshot to begin tracking.</p></div>
+      </div>
+      <aside class="panel changes-panel">
+        <div class="panel-heading"><div><p class="eyebrow">HISTORY</p><h3>Recent movement</h3></div></div>
+        <div id="changes" class="change-list"><p class="empty">Changes will appear here.</p></div>
+      </aside>
+    </section>
+
+    <!-- This note reminds us that JSON is temporary until the email importer is added. -->
+    <footer>Data source adapter: local JSON import · Connect an authorized MLS/provider feed before production use</footer>
+  </main>
+  <!-- Load behavior after the page markup exists so JavaScript can find the elements above. -->
+  <script src="/static/app.js"></script>
+</body>
+</html>
