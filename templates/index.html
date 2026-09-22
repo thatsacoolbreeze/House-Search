@@ -10,15 +10,16 @@
 <body>
   <!-- Everything inside this main element is the visible House Watch dashboard. -->
   <main class="shell">
-    <!-- The header identifies the app and contains the manual import control. -->
+    <!-- The header identifies the app and presents a polished status view for the current monitor. -->
     <header class="topbar">
       <div>
         <p class="kicker">LOCAL PROPERTY MONITOR</p>
         <h1>House Watch <span>/ Ottawa</span></h1>
       </div>
-      <!-- JavaScript connects this button to the hidden file input below. -->
-      <button id="import-button" class="action">Import snapshot</button>
-      <input id="file-input" type="file" accept=".json" hidden>
+      <div class="status-badge">
+        <span class="status-dot"></span>
+        Auto-import ready
+      </div>
     </header>
 
     <!-- This section summarizes the search rules currently hard-coded in app.py. -->
@@ -34,9 +35,9 @@
     <!-- JavaScript fills these four values after calling the Python API. -->
     <section class="stats" aria-label="Search summary">
       <div><span>Matching homes</span><strong id="listing-count">—</strong></div>
-      <div><span>New this snapshot</span><strong id="new-count">—</strong></div>
+      <div><span>New today</span><strong id="new-count">—</strong></div>
       <div><span>Price changes</span><strong id="change-count">—</strong></div>
-      <div><span>Last checked</span><strong id="checked-at">—</strong></div>
+      <div><span>Last updated</span><strong id="checked-at">—</strong></div>
     </section>
 
     <!-- The left panel lists matching homes; the right panel lists recorded changes. -->

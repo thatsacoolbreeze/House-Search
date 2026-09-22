@@ -4,21 +4,29 @@ const money = value => new Intl.NumberFormat('en-CA', { style: 'currency', curre
 const dateLabel = value => value ? new Date(value).toLocaleString('en-CA', { dateStyle: 'medium', timeStyle: 'short' }) : '—';
 
 async function loadDashboard() {
-  // Ask the Python server for the two datasets the dashboard needs.
-  // Promise.all sends both requests together instead of waiting for one before starting the other.
-  const [listingsResponse, changesResponse] = await Promise.all([fetch('/api/listings'), fetch('/api/changes')]);
-  // Convert each HTTP response from JSON text into a JavaScript array.
+  // The page loads data once when it opens. The normal workflow updates the data
+  // only when the user runs start.py again.
+  // Promise.all makes the three independent requests at the same time.
+  const [listingsResponse, changesResponse, statusResponse] = await Promise.all([
+    fetch('/api/listings'),
+    fetch('/api/changes'),
+    fetch('/api/status')
+  ]);
   const listings = await listingsResponse.json();
   const changes = await changesResponse.json();
-  // Separate change events so the summary counters can show useful totals.
-  const newChanges = changes.filter(change => change.kind === 'new');
+  const status = await statusResponse.json();
+  // The server returns the newest 30 changes. From those, count today's new
+  // listings and all recent price changes for the summary row.
+  const today = new Date().toLocaleDateString('en-CA');
+  const newChanges = changes.filter(change => change.kind === 'new' && new Date(change.occurred_at).toLocaleDateString('en-CA') === today);
   const priceChanges = changes.filter(change => change.kind.startsWith('price_'));
+  const lastUpdated = status.last_updated || null;
 
-  // Put the summary values into the matching HTML elements using their IDs.
+  // IDs connect the JSON values to the matching elements in index.html.
   document.querySelector('#listing-count').textContent = listings.length;
   document.querySelector('#new-count').textContent = newChanges.length;
   document.querySelector('#change-count').textContent = priceChanges.length;
-  document.querySelector('#checked-at').textContent = new Date().toLocaleTimeString('en-CA', { hour: 'numeric', minute: '2-digit' });
+  document.querySelector('#checked-at').textContent = lastUpdated ? dateLabel(lastUpdated) : '—';
   renderListings(listings);
   renderChanges(changes);
 }
@@ -32,6 +40,7 @@ function renderListings(listings) {
     return;
   }
   // map creates one HTML card per listing; join combines the cards into one string.
+  // The URL is opened in a new tab so the dashboard remains available.
   target.innerHTML = listings.map(listing => `
     <article class="listing">
       <div class="listing-main">
@@ -44,6 +53,7 @@ function renderListings(listings) {
 
 function renderChanges(changes) {
   // The change history uses the same pattern as the listing renderer above.
+  // Each event was created by import_listings when a new home or price change was found.
   const target = document.querySelector('#changes');
   if (!changes.length) {
     target.innerHTML = '<p class="empty">No changes recorded yet.</p>';
@@ -59,19 +69,6 @@ function renderChanges(changes) {
   }).join('');
 }
 
-// Clicking the visible button opens the hidden file picker.
-document.querySelector('#import-button').addEventListener('click', () => document.querySelector('#file-input').click());
-document.querySelector('#file-input').addEventListener('change', async event => {
-  // Stop if the user opened the picker but cancelled without choosing a file.
-  const file = event.target.files[0];
-  if (!file) return;
-  // Read the selected JSON file as text and send it to POST /api/import.
-  const payload = await file.text();
-  const response = await fetch('/api/import', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload });
-  if (!response.ok) alert('The import could not be read. Check the JSON format.');
-  await loadDashboard();
-  event.target.value = '';
-});
-
-// Load saved data as soon as the page finishes loading.
+// Manual import buttons were removed so start.py is the one clear import path.
+// Calling this at the bottom waits until the page elements above already exist.
 loadDashboard();
